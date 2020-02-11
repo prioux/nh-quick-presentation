@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>NeuroHub Presentation</title>
+  <link rel="stylesheet" href="css/reveal.css">
+  <link rel="stylesheet" href="css/night.css">
+  <link rel="stylesheet" href="plugin/highlight/style/monokai-sublime.css">
+  <meta charset="utf-8"/>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+
+  <section id="title">
+    <img src="images/cbrain-large_white_alpha.png" class="cbblue">
+    <p>
+    <h2>NeuroHub Dev Processes</h2>
+    Pierre Rioux
+    <br>
+    <span>For: Feb 2020 - Apr 2020</span>
+  </section>
+
+<!-- ****************************** -->
+
+  <section id="coding">
+    <h2>Coding</h2>
+    <ul>
+      <li>We use the CBRAIN codebase as the backbone</li>
+      <li>Integration with LORIS: ideas</li>
+      <li>All neurohub stuff can be managed with CBRAIN too</li>
+      <li>Low priority: doing in NH what CBRAIN can do</li>
+      <li>Higher priority: neurohub-specific stuff</li>
+    </ul>
+  </section>
+
+  <section id="github">
+    <h2>GitHub</h2>
+    <ul>
+      <li>New branch already prepared: <em>neurohub</em></li>
+      <li>No repo forking</li>
+      <li>No pull requests</li>
+      <li>No tests :-( !!!</li>
+      <li>Devs will pull the <em>neurohub</em> branch, commit, and push back directly on it</li>
+    </ul>
+  </section>
+
+  <section id="github2">
+    <h2>GitHub 2</h2>
+    <ul>
+      <li>No modifications to base CBRAIN code if possible</li>
+      <li>Otherwise: push to <em>dev</em> then merge in <em>neurohub</em></li>
+    </ul>
+    <p>
+    <img src="images/graph.png">
+  </section>
+
+  <section id="rails">
+    <h2>Rails</h2>
+    <ul>
+      <li>We use plain standard RAILS</li>
+      <li>New controllers</li>
+      <li>Same models</li>
+      <li>New templates: Rails ERB templates</li>
+      <li>No javascript</li>
+      <li>Namespaces: prefix stuff with <strong>nh</strong> or <strong>nh-</strong> or <strong>nh_</strong></li>
+    </ul>
+  </section>
+
+  <section id="devroles">
+    <h2>Dev roles wrt UI</h2>
+    <ul>
+      <li>Backend: no UI fancyness</li>
+      <li>Frontend: adjust stylesheets and templates</li>
+      <li>Single stylesheet for the whole app</li>
+    </ul>
+  </section>
+
+  <section id="switcher">
+    <h2>Switcher</h2>
+    <ul>
+      <li>Run 'mode' controlled by env <em>CBRAIN_INSTANCE_NAME</em></li>
+      <li><pre>env CBRAIN_INSTANCE_NAME=neurohub rails server</pre></li>
+      <li>New CBRAIN class methods: <em>CBRAIN.is_app_CBRAIN?</em> and <em>CBRAIN.is_app_NEUROHUB?</em></li>
+      <li>NeuroHub routes are in a special section in routes.rb</li>
+      <li>Template layouts are switched early and make the two apps separate</li>
+    </ul>
+  </section>
+
+  <section id="switcher2">
+    <h2>Main layout template switcher</h2>
+    <em>BrainPortal/app/views/layouts/application.html.erb</em>
+    <p>
+<pre><code class="erb">
+&lt;% if CBRAIN.is_app_CBRAIN? %&gt;
+  &lt;%= render :partial =&gt; 'layouts/cbrain_application' %&gt;
+&lt;% elsif CBRAIN.is_app_NEUROHUB? %&gt;
+  &lt;%= render :partial =&gt; 'layouts/neurohub_application' %&gt;
+&lt;% else %&gt;
+Well, not a known value for the app name.
+&lt;% end %&gt;
+</code></pre>
+  </section>
+
+  <section id="templates1">
+    <h2>Bare templates</h2>
+<pre><code class="erb">
+&lt;%= form_tag nhsession_path do %&gt;
+
+  Username: &lt;%= text_field_tag 'username', nil, tabindex: 1 %&gt;
+  &lt;br&gt;
+  Password: &lt;%= password_field_tag 'password', nil, tabindex: 2 %&gt;
+
+  &lt;p&gt;
+  &lt;%= submit_tag "Yo" %&gt;
+
+&lt;% end %&gt;
+</code></pre>
+  </section>
+
+  <section id="templates2">
+    <h2>Bare templates 2</h2>
+    <img src="images/login.png">
+  </section>
+
+  <section id="templates3">
+    <h2>CSS</h2>
+    <em>BrainPortal/public/stylesheets/neurohub.css</em>
+<pre><code class="css">
+.nh_demo {
+  border: 2px solid red;
+  background-color: #ffffcc;
+}
+</code></pre>
+  </section>
+
+  <section id="server">
+    <h2>Server deployment</h2>
+    <ul>
+      <li>Dev server is live right now!</li>
+      <li>Controlled by monit</li>
+      <li>Proxied by nginx</li>
+      <li><a href="https://portal.cbrain.mcgill.ca:5000/">https://portal.cbrain.mcgill.ca:5000/</a></li>
+      <li>Connected to main CBRAIN database!</li>
+      <li>Runs in Rails 'production' environment</li>
+      <li>Visible only within McGill</li>
+      <li>Has: authentication page + welcome page</li>
+      <li>Will get: button for automatic GitHub pull + restart</li>
+    </ul>
+  </section>
+
+</section>
+
+    </div>
+  </div>
+
+<!-- ############################## -->
+<!-- ############################## -->
+<!-- ############################## -->
+
+  <!-- Declares a filter to turn white into CBRAIN blue, #05A3D6 -->
+
+  <svg height="0">
+    <filter id="cbrainblue">
+      <feColorMatrix values="0.0196 0.0    0.0    0 0
+                             0.0    0.6392 0.0    0 0
+                             0.0    0.0    0.8392 0 0
+                             0      0      0      1 0"/>
+    </filter>
+  </svg>
+
+  <!-- Main reveal.js setup -->
+
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize(
+    { slideNumber: true, history: true }
+    );
+    hljs.initHighlightingOnLoad();
+  </script>
+
+  <!-- Styles -->
+
+  <style>
+
+    /* Headers */
+
+    @keyframes glowing {
+        0% { text-shadow: 0.0em 0.0em 0.0em #0cc; }
+       25% { text-shadow: 0.0em 0.0em 0.2em #0dd; }
+       50% { text-shadow: 0.0em 0.0em 0.4em #0ee; }
+       75% { text-shadow: 0.0em 0.0em 0.2em #0dd; }
+      100% { text-shadow: 0.0em 0.0em 0.0em #0cc; }
+    }
+
+    .reveal h1,
+    .reveal h2,
+    .reveal h3,
+    .reveal h4,
+    .reveal h5 {
+      color: #ffffff;
+      text-shadow: 0.0em 0.0em 0.2em #0cc;
+    }
+
+    /* Text styles: em, strong, b, i */
+
+    .reveal .glow {
+      animation: glowing 3555ms infinite;
+    }
+
+    .reveal em {
+      color: yellow;
+      font-style: normal; /* yes please! */
+    }
+    .reveal strong {
+      color: #0ff;  /* funny, I'm using RGB with only three digits today */
+    }
+    .reveal b {
+      color: #00f;
+    }
+    .reveal i {
+      color: #f00;
+      font-style: normal; /* yes please! */
+    }
+
+    /* Misc */
+
+    .reveal section img {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    .reveal section img.cbblue {
+      filter: url(#cbrainblue);
+    }
+    .reveal pre {
+      background: #033;
+      /* padding: 0.2em 0.5em 0.3em 0.5em; */
+      padding: 0;
+      width: auto;
+    }
+    .reveal pre.compact {
+      display: inline-block;
+    }
+    .reveal pre.large {
+      font-size: 120%;
+    }
+    .reveal pre.medium {
+      font-size: 100%;
+    }
+    .reveal pre.supersmall {
+      font-size: 40%;
+    }
+    .reveal pre > code.nomaxheight {
+      max-height: none;
+    }
+    .reveal .cell {
+      display: table-cell;
+    }
+    .reveal th {
+      color: #0aa;
+    }
+    .reveal .transp {
+      background-color: transparent;
+    }
+    .reveal .resize80 { /* for pics */
+      width: 80%;
+      height: 80%;
+    }
+    .reveal .resize40 { /* for pics */
+      width: 40%;
+      height: 40%;
+    }
+    .reveal .resize10 { /* for pics */
+      width: 10%;
+      height: 10%;
+    }
+
+    .hljs-comment {  /* I don't like the default grey */
+      color: #c9a929;
+    }
+
+  </style>
+</body>
+
+</html>
